@@ -1,4 +1,3 @@
-
 import css_make as cm
 import numpy as np
 import scipy
@@ -30,7 +29,7 @@ print(result[3])
 from ldpc.codes import hamming_code
 
 H = hamming_code(3).toarray()
-qcode = cm.CssCode(hx=H, hz=H)
+qcode = cm.CssCode(hx=H, hz=H, code_distance=0)
 print(qcode.code_params)
 
 print(qcode.lx)
