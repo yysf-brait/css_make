@@ -60,11 +60,15 @@ qcode = cm.CssCode(hx=H, hz=H)  # Create a CssCode instance
 
 # Inspect the logical operations of CssCode
 print("CssCode Logical X:")
-print(qcode.lx.toarray())  # Print the logical X operation result
+print(qcode.lx)
 print("CssCode Logical Z:")
-print(qcode.lz.toarray())  # Print the logical Z operation result
+print(qcode.lz)
+print(qcode.code_params)
+qcode.test()
+
 
 # Example 3: Using the stab.StabCode class
 # The StabCode class is equivalent to the stab_code in /src/bposd/stab.py,
 # and serves as a dependency for other modules in this context.
 print("StabCode is available as a dependency.")
+

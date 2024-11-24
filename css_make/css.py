@@ -1,10 +1,8 @@
 import numpy as np
-import scipy
 from ldpc import mod2
 from ldpc.alist import save_alist
 from ldpc.code_util import compute_code_distance
 from . import stab
-from . import cm_mod2
 
 
 class CssCode:
@@ -105,14 +103,15 @@ class CssCode:
             # lz logical operators
             # lz\in ker{hx} AND \notin Im(Hz.T)
 
-            ker_hx = mod2.nullspace(hx)  # compute the kernel basis of hx
-            im_hzT = mod2.row_basis(hz)  # compute the image basis of hz.T # noqa
+            ker_hx = mod2.nullspace(hx).toarray()  # compute the kernel basis of hx
+            im_hzT = mod2.row_basis(hz).toarray()  # compute the image basis of hz.T # noqa
 
             # in the below we row reduce to find vectors in kx that are not in the image of hz.T.
-            log_stack = scipy.sparse.vstack([im_hzT, ker_hx])
-            pivots = cm_mod2.row_echelon(log_stack.T)
+            log_stack = np.vstack([im_hzT, ker_hx])
+            pivots = mod2.row_echelon(log_stack.T)
             if pivots is None:
-                raise Exception("Error: pivots is None. Check if `pivots = mod2_numpy.row_echelon(log_stack.T)` is correct.")
+                raise Exception(
+                    "Error: pivots is None. Check if `pivots = mod2_numpy.row_echelon(log_stack.T)` is correct.")
             pivots = pivots[3]
             log_op_indices = [i for i in range(im_hzT.shape[0], log_stack.shape[0]) if i in pivots]
             log_ops = log_stack[log_op_indices]

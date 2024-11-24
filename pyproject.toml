@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "css_make"
-version = "1.0.0"
+version = "1.1.0"
 description = "A package designed as a patching solution for issues in `ldpc` and `bp_osd`, addressing matrix handling in `mod2.row_echelon` and fixing bugs in the `css_code` class."
 readme = {file = "README.md", content-type = "text/markdown"}
 license = {text = "MIT"}
@@ -22,7 +22,7 @@ classifiers = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-    "numpy>=2.0.0",
+    "numpy>=1.26.0",
     "scipy~=1.14.1",
     "ldpc~=2.1.2",
     "tqdm"
