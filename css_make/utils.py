@@ -1,5 +1,31 @@
 import numpy as np
-import scipy
+from scipy.sparse import issparse
+
+
+def to_ndarray_copy(matrix):
+    """
+    Check if the input is a dense numpy array or a sparse matrix and convert it to a dense numpy array.
+
+    Args:
+        matrix: The input to be checked or converted.
+
+    Returns:
+        np.ndarray: A dense numpy array (copy).
+
+    Raises:
+        TypeError: If the input is not a dense numpy array or a sparse matrix, and cannot be converted.
+    """
+    if isinstance(matrix, np.ndarray):
+        return np.copy(matrix)
+
+    if issparse(matrix):
+        return matrix.toarray()
+
+    try:
+        print("Trying to convert the input to a dense numpy array")
+        return np.array(matrix, copy=True)
+    except Exception as e:
+        raise TypeError("Input is not a dense numpy array and cannot be converted.") from e
 
 
 def row_echelon(matrix, full=False):
@@ -45,24 +71,7 @@ def row_echelon(matrix, full=False):
 
     num_rows, num_cols = np.shape(matrix)
 
-
-    if isinstance(matrix, np.ndarray): # Check if the input is a numpy.ndarray
-        matrix = np.copy(matrix)
-    if scipy.sparse.isspmatrix_csc(matrix):  # Check if the input is a CSC matrix
-        matrix = matrix.toarray()
-    if scipy.sparse.isspmatrix_csr(matrix):  # Check if the input is a CSR matrix
-        matrix = matrix.toarray()
-
-    if isinstance(matrix, np.ndarray):
-        the_matrix = matrix
-    else:
-        try:
-            the_matrix = matrix.toarray()
-        except Exception as e:
-            print("Input is not np.ndarray or scipy.sparse.csr_matrix or scipy.sparse.csc_matrix")
-            print("When this function try to convert the input to np.ndarray, it raises an error:")
-            print(e)
-            return None
+    the_matrix = to_ndarray_copy(matrix)
 
     transform_matrix = np.identity(num_rows).astype(int)
     pivot_row = 0
