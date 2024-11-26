@@ -4,4 +4,4 @@
 /build/
 /dist/
 /*.egg-info/
-/desktop.ini
+desktop.ini
