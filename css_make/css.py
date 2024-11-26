@@ -1,5 +1,6 @@
 import traceback
 from functools import cached_property
+from typing import List
 
 import numpy as np
 from ldpc import mod2
@@ -10,7 +11,7 @@ from . import utils
 
 
 class CssCode:
-    tests_list = [
+    _tests_list = [
         ("Block dimensions[N, K, lz, lx]",
          lambda self: self.N == self.lz.shape[1] == self.lx.shape[1] and self.K == self.lz.shape[0] == self.lx.shape[
              0]),
@@ -27,7 +28,7 @@ class CssCode:
     ]
 
     @staticmethod
-    def compute_lz(hx, hz):
+    def _compute_lz(hx, hz):
         # lz logical operators
         # lz\in ker{hx} AND \notin Im(Hz.T)
 
@@ -43,9 +44,10 @@ class CssCode:
         return log_ops
 
     def __init__(self,
-                 hx: np.array = None,
-                 hz: np.array = None,
-                 name: str = "<Unnamed CSS code>"):
+                 hx=None,
+                 hz=None,
+                 name: str = "<Unnamed CSS code>",
+                 **kwargs):
 
         self.hx = utils.to_ndarray_copy(hx) if hx is not None else np.array([[]])  # hx pcm
         self.hz = utils.to_ndarray_copy(hz) if hz is not None else np.copy(self.hx)  # hz pcm
@@ -54,6 +56,8 @@ class CssCode:
         if self.N == 0:
             print("Warning: hx and hz matrices are both have 0 columns. So the N is 0!")
             return
+
+        self.set(**kwargs)
 
     def __str__(self) -> str:
         return f"{self.name} <params: {self.code_params}>"
@@ -103,12 +107,12 @@ class CssCode:
     @cached_property
     def lx(self):
         """x logicals"""
-        return self.compute_lz(self.hz, self.hx)
+        return self._compute_lz(self.hz, self.hx)
 
     @cached_property
     def lz(self):
         """z logicals"""
-        return self.compute_lz(self.hx, self.hz)
+        return self._compute_lz(self.hx, self.hz)
 
     @cached_property
     def l(self):
@@ -134,27 +138,32 @@ class CssCode:
         return np.min([dx, dz])
 
     @cached_property
+    def valid(self):
+        return self.test(show=False)
+
+    @cached_property
     def code_params(self):
         return f"({self.L},{self.Q})-[[{self.N},{self.K},{self.D}]]"
 
-    def save(self, code_name: str | None = None):
+    def save(self, save_property: List[str], code_name: str | None = None):
         """
         Save the code in alist format
-        If code_name is not provided, the code name is used
+        save_property: List of properties to save
+        code_name: Name of the code
         """
         if code_name is None:
             code_name = self.name
-
-        save_alist(f"{code_name}_hx.alist", self.hx)
-        save_alist(f"{code_name}_hz.alist", self.hz)
-        save_alist(f"{code_name}_lx.alist", self.lx)
-        save_alist(f"{code_name}_lz.alist", self.lz)
+        for prop in save_property:
+            if not hasattr(self, prop) or not isinstance(getattr(self, prop), np.ndarray):
+                print(f"Property '{prop}' is not a valid numpy array. Skipping ..")
+            save_alist(f"{code_name}_{prop}.alist", getattr(self, prop))
 
     def test(self, show: bool = True) -> bool:
         results = {}
 
-        print(f"Testing {str(self)} ..")
-        for name, condition in self.tests_list:
+        if show:
+            print(f"Testing {str(self)} ..")
+        for name, condition in self._tests_list:
             try:
                 results[name] = condition(self)
             except Exception as e:
@@ -187,9 +196,10 @@ class CssCode:
 
 class HGP(CssCode):
     def __init__(self,
-                 h1: np.ndarray = None,
-                 h2: np.ndarray = None,
-                 name: str = "<Unnamed HGP>"):
+                 h1=None,
+                 h2=None,
+                 name: str = "<Unnamed HGP>",
+                 **kwargs):
         self.h1 = utils.to_ndarray_copy(h1) if h1 is not None else np.array([[]])
         self.h2 = utils.to_ndarray_copy(h2) if h2 is not None else np.copy(self.h1)
 
@@ -210,7 +220,7 @@ class HGP(CssCode):
             np.kron(self.h1.T, i_m2)  # hz2
         ])
 
-        super().__init__(hx=hx, hz=hz, name=name)
+        super().__init__(hx=hx, hz=hz, name=name, **kwargs)
 
     @cached_property
     def D(self):

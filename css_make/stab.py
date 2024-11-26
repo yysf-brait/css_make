@@ -2,6 +2,9 @@ import numpy as np
 from ldpc import mod2
 from tqdm import tqdm
 
+print("本文件已经弃用，正常情况下不应使用它！")
+print("This file is deprecated and should not be used under normal circumstances!")
+
 
 def gf2_to_gf4(_bin):
     n = int(len(_bin) / 2)
@@ -55,8 +58,8 @@ class StabCode:
         # compute logical operators
         # Kernel H
 
-        ker_H = mod2.nullspace(np.hstack([self.hz, self.hx])) # noqa
-        image_HT = mod2.row_basis(np.hstack([self.hx, self.hz])) # noqa
+        ker_H = mod2.nullspace(np.hstack([self.hz, self.hx]))  # noqa
+        image_HT = mod2.row_basis(np.hstack([self.hx, self.hz]))  # noqa
 
         log_stack = np.vstack([image_HT, ker_H])
         pivots = mod2.row_echelon(log_stack.T)[3]
@@ -154,4 +157,3 @@ class StabCode:
     @property
     def code_params(self):
         return f"[[{self.N},{self.K},{self.D}]]"
-

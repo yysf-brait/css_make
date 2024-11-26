@@ -6,14 +6,14 @@ build-backend = "setuptools.build_meta"
 name = "css_make"
 version = "1.1.0"
 description = "A package designed as a patching solution for issues in `ldpc` and `bp_osd`, addressing matrix handling in `mod2.row_echelon` and fixing bugs in the `css_code` class."
-readme = {file = "README.md", content-type = "text/markdown"}
-license = {text = "MIT"}
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { text = "MIT" }
 authors = [
-    {name = "Rambler Stone", email = "keytophy@gmail.com"},
-    {name = "Brait", email = "brait.w216@gmail.com"}
+    { name = "Rambler Stone", email = "keytophy@gmail.com" },
+    { name = "Brait", email = "brait.w216@gmail.com" }
 ]
 maintainers = [
-    {name = "Brait", email = "brait.w216@gmail.com"},
+    { name = "Brait", email = "brait.w216@gmail.com" },
 ]
 classifiers = [
     "Programming Language :: Python :: 3",

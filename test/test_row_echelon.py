@@ -1,6 +1,7 @@
-import css_make as cm
 import numpy as np
 import scipy
+
+import css_make as cm
 
 H = np.array([[1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
               [0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0],

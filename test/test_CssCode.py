@@ -1,7 +1,8 @@
-import css_make as cm
 from ldpc.codes import hamming_code
 
-H = hamming_code(3).toarray()
+import css_make as cm
+
+H = hamming_code(3)
 qcode = cm.CssCode(hx=H, hz=H)
 
 print(f"qcode: {qcode}")
