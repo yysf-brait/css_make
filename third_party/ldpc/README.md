@@ -1,7 +1,6 @@
 # ldpc (Modified)
 
-This directory contains files modified from the project **ldpc
-** ([GitHub Repository](https://github.com/quantumgizmos/ldpc)), which is licensed under the MIT License.
+This directory contains files modified from the project **ldpc** ([GitHub Repository](https://github.com/quantumgizmos/ldpc)), which is licensed under the MIT License.
 
 ## Included Files
 

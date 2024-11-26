@@ -1,7 +1,6 @@
 # bp_osd (Modified)
 
-This directory contains files modified from the project **bp_osd
-** ([GitHub Repository](https://github.com/quantumgizmos/bp_osd)), which is licensed under the MIT License.
+This directory contains files modified from the project **bp_osd** ([GitHub Repository](https://github.com/quantumgizmos/bp_osd)), which is licensed under the MIT License.
 
 ## Included Files
 
