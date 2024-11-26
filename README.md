@@ -255,7 +255,7 @@ This project is modified from the following two projects, and includes selected 
 License:
 
 1. **bp_osd** ([GitHub Repository](https://github.com/quantumgizmos/bp_osd))
-2. **ldpc** ([GitHub Repository](https://github.com/quantumgizmos/ldpc))
+2. ~~**ldpc** ([GitHub Repository](https://github.com/quantumgizmos/ldpc))~~
 
 The included files have been modified to fit the specific needs of this project. For details about the modifications,
 see the respective directories under `third_party/`. The original LICENSE files from these projects are preserved.
