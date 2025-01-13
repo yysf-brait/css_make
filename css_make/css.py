@@ -1,5 +1,6 @@
 import traceback
 from functools import cached_property
+from pickletools import uint8
 from typing import List
 
 import numpy as np
@@ -100,8 +101,8 @@ class CssCode:
 
     @cached_property
     def h(self):
-        hx = np.vstack([np.zeros(self.hz.shape, dtype=int), self.hx])
-        hz = np.vstack([self.hz, np.zeros(self.hx.shape, dtype=int)])
+        hx = np.vstack([self.hx, np.zeros(self.hx.shape, dtype=np.uint8)])
+        hz = np.vstack([np.zeros(self.hz.shape, dtype=np.uint8), self.hz])
         return np.hstack([hx, hz])
 
     @cached_property
@@ -116,8 +117,8 @@ class CssCode:
 
     @cached_property
     def l(self):
-        lx = np.vstack([np.zeros(self.lz.shape, dtype=int), self.lx])
-        lz = np.vstack([self.lz, np.zeros(self.lx.shape, dtype=int)])
+        lx = np.vstack([np.zeros(self.lz.shape, dtype=np.uint8), self.lx])
+        lz = np.vstack([self.lz, np.zeros(self.lx.shape, dtype=np.uint8)])
         return np.hstack([lx, lz])
 
     @cached_property
