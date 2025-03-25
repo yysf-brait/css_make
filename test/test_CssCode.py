@@ -2,8 +2,8 @@ from ldpc.codes import hamming_code
 
 import css_make as cm
 
-H = hamming_code(3)
-qcode = cm.CssCode(hx=H, hz=H)
+H = hamming_code(16)
+qcode = cm.CssCode(hx=H, hz=H, compute_distance_timeout=2.0)
 
 print(f"qcode: {qcode}")
 print(f"N: {qcode.N}")

@@ -93,14 +93,15 @@ qcode = cm.CssCode(hx=H)
 
 ##### Full Creation
 
-You can provide both the `hx` and `hz` parameters, along with an optional `name` parameter, for full creation:
+You can provide both the `hx` and `hz` parameters, along with optional `name` and `compute_distance_timeout` parameters, for full creation:
 
 ```python
-qcode = cm.CssCode(hx=H, hz=H, name="My CSS Code")
+qcode = cm.CssCode(hx=H, hz=H, name="My CSS Code", compute_distance_timeout=2.0)
 ```
 
 - If the `hz` parameter is not provided, it defaults to a copy of `hx`.
 - The `name` parameter defaults to `"<Unnamed CSS code>"` if not provided.
+- When calculating the code distance, if the input matrix has more than 15 columns, the system will automatically invoke `ldpc.code_util.estimate_code_distance`. In this case, the `compute_distance_timeout` parameter will be passed as the `timeout_seconds` argument to this function, defaulting to 1.0 seconds.
 
 ##### Using Additional Custom Parameters
 

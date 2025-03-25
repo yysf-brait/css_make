@@ -1,9 +1,10 @@
 import traceback
 from functools import cached_property
-from pickletools import uint8
-from typing import List
+from typing import List, Union
 
+import ldpc
 import numpy as np
+import scipy
 from ldpc import mod2
 from ldpc.alist import save_alist
 from ldpc.code_util import compute_code_distance
@@ -29,6 +30,18 @@ class CssCode:
     ]
 
     @staticmethod
+    def _compute_code_distance(h: Union[scipy.sparse.spmatrix, np.ndarray],
+                               compute_distance_timeout: float = 1.0) -> int:
+        col_count = h.shape[1]
+        if col_count <= 15:
+            return compute_code_distance(h)
+        else:
+            return ldpc.code_util.estimate_code_distance(
+                h,
+                timeout_seconds=compute_distance_timeout,
+                number_of_words_to_save=0)[0]
+
+    @staticmethod
     def _compute_lz(hx, hz):
         # lz logical operators
         # lz\in ker{hx} AND \notin Im(Hz.T)
@@ -38,7 +51,11 @@ class CssCode:
 
         # in the below we row reduce to find vectors in kx that are not in the image of hz.T.
         log_stack = np.vstack([im_hzT, ker_hx])
-        pivots = mod2.row_echelon(log_stack.T)[3]
+        # from scipy.sparse import csr_matrix
+        # log_stack_T = csr_matrix(log_stack.T).asformat("csr")
+        # assert isinstance(log_stack_T, scipy.sparse.csr.csr_matrix)
+        log_stack_T = log_stack.T
+        pivots = mod2.row_echelon(log_stack_T)[3]
         log_op_indices = [i for i in range(im_hzT.shape[0], log_stack.shape[0]) if i in pivots]
         log_ops = log_stack[log_op_indices]
 
@@ -48,8 +65,10 @@ class CssCode:
                  hx=None,
                  hz=None,
                  name: str = "<Unnamed CSS code>",
+                 compute_distance_timeout: float = 1.0,
                  **kwargs):
 
+        self.compute_distance_timeout = compute_distance_timeout
         self.hx = utils.to_ndarray_copy(hx) if hx is not None else np.array([[]])  # hx pcm
         self.hz = utils.to_ndarray_copy(hz) if hz is not None else np.copy(self.hx)  # hz pcm
         self.name = name
@@ -134,8 +153,8 @@ class CssCode:
 
     @cached_property
     def D(self):  # noqa
-        dx = compute_code_distance(self.hx)
-        dz = compute_code_distance(self.hz)
+        dx = self._compute_code_distance(self.hx)
+        dz = self._compute_code_distance(self.hz)
         return np.min([dx, dz])
 
     @cached_property
@@ -225,8 +244,8 @@ class HGP(CssCode):
 
     @cached_property
     def D(self):
-        d1 = compute_code_distance(self.h1)
-        d1t = compute_code_distance(self.h1.T)
-        d2 = compute_code_distance(self.h2)
-        d2t = compute_code_distance(self.h2.T)
+        d1 = self._compute_code_distance(self.h1)
+        d1t = self._compute_code_distance(self.h1.T)
+        d2 = self._compute_code_distance(self.h2)
+        d2t = self._compute_code_distance(self.h2.T)
         return np.min([d1, d1t, d2, d2t]).astype(int)
